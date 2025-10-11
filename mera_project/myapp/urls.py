@@ -15,14 +15,15 @@ urlpatterns = [
     # 👤 User Pages
     path("welcome/", views.welcome, name="welcome"),
     path("profile/", views.profile, name="profile"),
-    path('edit/<str:doc_id>/', views.edit_user, name='edit_user'),
+  path('edit/<str:doc_id>/', views.edit_user, name='edit_user'),
+  path('delete/<str:doc_id>/', views.delete_user, name='delete_user'),
 
-    # 💬 Contact Pages
+  # 💬 Contact Pages
     path("contact/", views.contacts, name="contact"),
-    path("show/", views.Showdata, name="show"),
-    path('delete/<str:doc_id>/', views.delete_user, name='delete_user'),
+    path('show/', views.show_data, name='show'),
 
-    # ⚙️ Admin Panel
+
+  # ⚙️ Admin Panel
     path("admin/", admin.site.urls),
 
 path("edit-profile/", views.edit_profile, name="edit_profile"),

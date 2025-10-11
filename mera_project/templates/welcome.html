@@ -48,7 +48,7 @@
       z-index: 1;
     }
 
-    /* Glass Box */
+    /* 🌟 Glass Welcome Box */
     .welcome-box {
       position: relative;
       z-index: 2;
@@ -63,6 +63,12 @@
       max-width: 520px;
       margin: auto;
       text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-60%); }
+      to { opacity: 1; transform: translateY(-50%); }
     }
 
     h1 {
@@ -163,8 +169,9 @@
     <div class="avatar">
       {{ user_name|slice:":1" }}{{ user_name|cut:" "|slice:"1:2" }}
     </div>
+
     <h1>🎉 Login Successful!</h1>
-    <h3>Welcome, {{ user_name }} 👋</h3>
+    <h3>WELCOME, {{ user_name }} 👋</h3>
     <p>Your email: <strong>{{ user_email }}</strong></p>
 
     <div class="mt-4">

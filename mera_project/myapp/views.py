@@ -6,6 +6,7 @@ from mera_project.firebase_config import db
 import requests
 import firebase_admin
 from firebase_admin import credentials, auth  # ✅ Fixed: auth import missing
+from django.conf import settings
 
 
 # 🔑 Firebase Web API Key
@@ -43,23 +44,37 @@ def contacts(request):
     return render(request, "myapp/contact.html")
 
 
-def Showdata(request):
+def show_data(request):
     users = db.collection("User").stream()
     user_list = []
     for u in users:
         data = u.to_dict()
-        data["id"] = u.id  # Document ID for edit/delete
+        data["doc_id"] = u.id   # 🔑 Must! Otherwise reverse URL fails
         user_list.append(data)
     return render(request, "myapp/showdata.html", {"users": user_list})
 
+# -------------------- EDIT USER --------------------
+def edit_user(request, doc_id):
+    doc_ref = db.collection("User").document(doc_id)
+    user_data = doc_ref.get().to_dict()
 
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        doc_ref.update({"Name": name, "Email": email})
+        messages.success(request, "User updated successfully!")
+        return redirect("show")
+
+    return render(request, "myapp/edit_user.html", {"user": user_data, "doc_id": doc_id})
+
+# -------------------- DELETE USER --------------------
 def delete_user(request, doc_id):
-    db.collection("User").document(doc_id).delete()
-    messages.success(request, "User deleted successfully!")
+    try:
+        db.collection("User").document(doc_id).delete()
+        messages.success(request, "User deleted successfully!")
+    except:
+        messages.error(request, "Failed to delete user.")
     return redirect("show")
-
-
-# -------------------- FIREBASE REGISTER --------------------
 
 def register(request):
     if request.method == "POST":
@@ -172,26 +187,6 @@ def profile(request):
         'user_email': user_email,
         'user_name': user_name
     })
-
-
-# -------------------- EDIT USER --------------------
-
-def edit_user(request, doc_id):
-    doc_ref = db.collection("User").document(doc_id)
-    user_data = doc_ref.get().to_dict()
-
-    if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-
-        doc_ref.update({
-            "Name": name,
-            "Email": email
-        })
-        messages.success(request, "User updated successfully!")
-        return redirect("show")
-
-    return render(request, "myapp/edit_user.html", {"user": user_data, "doc_id": doc_id})
 
 def start(request):
     # Agar user already login hai to directly welcome page dikhao

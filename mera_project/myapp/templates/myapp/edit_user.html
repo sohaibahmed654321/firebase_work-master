@@ -2,22 +2,22 @@
 {% block title %}Edit User | My App{% endblock %}
 
 {% block content %}
-<div class="glass-box text-center">
-  <h2>Edit User</h2>
+<div class="container my-5" style="max-width: 500px;">
+  <h2 class="text-center mb-4 text-white">Edit User</h2>
 
-  <form method="POST">
+  <form method="POST" class="glass-box">
     {% csrf_token %}
     <div class="mb-3 text-start">
-      <label>Name</label>
+      <label class="form-label text-white">Name</label>
       <input type="text" name="name" class="form-control" value="{{ user.Name }}" required>
     </div>
 
     <div class="mb-3 text-start">
-      <label>Email</label>
+      <label class="form-label text-white">Email</label>
       <input type="email" name="email" class="form-control" value="{{ user.Email }}" required>
     </div>
 
-    <button type="submit" class="btn btn-success w-100 fw-bold rounded">Update</button>
+    <button type="submit" class="btn btn-success w-100">Update</button>
   </form>
 </div>
 {% endblock %}
