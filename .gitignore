@@ -1,0 +1,7 @@
+
+#enviroment
+dobb.json
+/venv/
+
+# env
+.env

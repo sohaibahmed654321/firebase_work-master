@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}All Users{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Registered Users</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td>
+          <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted">No users found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

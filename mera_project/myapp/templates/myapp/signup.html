@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Signup{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+  <div class="card shadow p-4">
+    <h2 class="text-center mb-4">Create an Account</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" name="password" required>
+      </div>
+      <button class="btn btn-primary w-100">Sign Up</button>
+    </form>
+
+    <!-- 👇 yahan login button -->
+    <div class="text-center mt-3">
+      <p class="mb-2">Already have an account?</p>
+      <a href="{% url 'login' %}" class="btn btn-success w-100">Login</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

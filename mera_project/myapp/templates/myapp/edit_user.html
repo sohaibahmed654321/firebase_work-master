@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Edit User | My App{% endblock %}
+
+{% block content %}
+<div class="glass-box text-center">
+  <h2>Edit User</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3 text-start">
+      <label>Name</label>
+      <input type="text" name="name" class="form-control" value="{{ user.Name }}" required>
+    </div>
+
+    <div class="mb-3 text-start">
+      <label>Email</label>
+      <input type="email" name="email" class="form-control" value="{{ user.Email }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100 fw-bold rounded">Update</button>
+  </form>
+</div>
+{% endblock %}
