@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>Welcome | My App</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <style>
     body, html {
@@ -15,7 +16,6 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    /* 🔥 Background slideshow */
     .slideshow {
       position: fixed;
       top: 0;
@@ -37,7 +37,6 @@
       opacity: 1;
     }
 
-    /* Overlay */
     .overlay {
       background-color: rgba(0, 0, 0, 0.55);
       position: fixed;
@@ -48,7 +47,6 @@
       z-index: 1;
     }
 
-    /* 🌟 Glass Welcome Box */
     .welcome-box {
       position: relative;
       z-index: 2;
@@ -85,7 +83,6 @@
       color: rgba(255, 255, 255, 0.85);
     }
 
-    /* Buttons */
     .btn-custom {
       width: 45%;
       font-weight: bold;
@@ -95,7 +92,6 @@
       transition: all 0.3s ease-in-out;
     }
 
-    /* ✨ Neon Glow Button */
     .btn-glow {
       color: white;
       border: 2px solid #00ffae;
@@ -132,7 +128,6 @@
       transform: scale(1.05);
     }
 
-    /* Avatar Circle */
     .avatar {
       width: 120px;
       height: 120px;
@@ -148,6 +143,31 @@
       background: linear-gradient(135deg, #00ffae, #007bff);
       border: 3px solid rgba(255, 255, 255, 0.4);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 🌐 Social Icons */
+    .social-links {
+      margin-top: 25px;
+    }
+    .social-links a {
+      color: white;
+      font-size: 1.4rem;
+      margin: 0 10px;
+      transition: 0.3s;
+    }
+    .social-links a:hover {
+      color: #00ffae;
+      transform: scale(1.2);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      color: #bbb;
+      font-size: 0.9rem;
+      z-index: 2;
     }
   </style>
 </head>
@@ -179,6 +199,14 @@
       <a href="{% url 'edit_profile' %}" class="btn btn-edit btn-custom">✏️ Edit</a>
       <a href="{% url 'logout' %}" class="btn btn-logout btn-custom">🚪 Logout</a>
     </div>
+
+    <!-- 🌐 Social Media Links -->
+    <div class="social-links">
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
   </div>
 
   <!-- 🎬 Background Transition JS -->
@@ -192,6 +220,8 @@
       slides[index].classList.add("active");
     }, 5000);
   </script>
+
+
 
 </body>
 </html>
