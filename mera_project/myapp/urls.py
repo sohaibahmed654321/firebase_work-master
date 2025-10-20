@@ -27,6 +27,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
 path("edit-profile/", views.edit_profile, name="edit_profile"),
-
+path('add_user/', views.add_user, name='add_user'),
+  path('show_data/', views.show_data, name='show_data'),  # ✅ Important line
 
 ]

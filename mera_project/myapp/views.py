@@ -81,7 +81,9 @@ def register(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        role = request.POST.get("role")  # 👈 get role from form
 
+        # 🔍 Validation
         if not name or not email or not password:
             messages.error(request, "All fields are required.")
             return redirect("reg")
@@ -96,20 +98,26 @@ def register(request):
 
         response = requests.post(url, json=payload)
 
+        # ✅ If Firebase signup successful
         if response.status_code == 200:
             db.collection("User").add({
                 "Name": name,
                 "Email": email,
                 "Pswd": password,
-                "Role": "User",
+                "Role": role if role else "User",  # ✅ save actual selected role
             })
-            messages.success(request, "User Registered Successfully! Please Login.")
+            messages.success(request, "🎉 User Registered Successfully! Please Login.")
             return redirect("login")
+
+        # ❌ If Firebase signup fails
         else:
             error_message = response.json().get("error", {}).get("message", "Registration failed.")
             messages.error(request, f"Error: {error_message}")
+            return redirect("reg")
 
+    # 🔹 GET request (form display)
     return render(request, "myapp/registration.html")
+
 
 
 # -------------------- FIREBASE LOGIN --------------------
@@ -224,3 +232,25 @@ def edit_profile(request):
         'user_email': user_email,
         'user_name': user_name
     })
+
+def add_user(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        role = request.POST.get('role')
+
+        # ✅ Use same collection name as show_data
+        db.collection('User').add({
+            'Name': name,
+            'Email': email,
+            'Pswd': password,
+            'Role': role
+        })
+
+        messages.success(request, "User added successfully!")
+        return redirect('show_data')
+
+    return render(request, 'add_user.html')
+
+
