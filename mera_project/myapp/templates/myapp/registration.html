@@ -4,173 +4,55 @@
 {% block content %}
 <div class="glass-box text-center">
   <h2 class="mb-3 text-light fw-bold">Create Account ✨</h2>
-
   {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
   {% endfor %}
 
   <form method="POST">
     {% csrf_token %}
-
-    <!-- Full Name -->
     <div class="mb-3 text-start">
       <label class="form-label text-white">Full Name</label>
-      <input type="text" name="name" class="form-control" placeholder="Enter your full name" required>
+      <input type="text" id="fullName" name="name" class="form-control" placeholder="Enter your full name" value="{{ name|default:'' }}" required>
     </div>
-
-    <!-- Email -->
     <div class="mb-3 text-start">
-      <label class="form-label text-white">Email</label>
-      <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+      <label class="form-label text-white">Your Email</label>
+      <input type="text" id="autoEmail" class="form-control {% if email_error %}is-invalid{% endif %}" value="" readonly>
     </div>
-
-    <!-- Password with Eye -->
     <div class="mb-3 text-start position-relative">
       <label class="form-label text-white">Password</label>
-      <input type="password" id="registerPassword" name="password" class="form-control pe-5" placeholder="Create a strong password" required>
+      <input type="password" id="registerPassword" name="password" class="form-control {% if password_error %}is-invalid{% endif %}" placeholder="Create a strong password" required>
       <i class="fa-solid fa-eye toggle-password" id="toggleRegisterPassword"></i>
     </div>
-
-    <!-- Role -->
     <div class="mb-3 text-start">
       <label class="form-label text-white">Role</label>
       <select name="role" class="form-control">
-        <option value="User">User</option>
-        <option value="Admin">Admin</option>
+        <option value="User" {% if role == "User" %}selected{% endif %}>User</option>
+        <option value="Admin" {% if role == "Admin" %}selected{% endif %}>Admin</option>
       </select>
     </div>
-
-    <!-- Register Button -->
     <button type="submit" class="btn-black-main w-100">Register</button>
   </form>
 
-  <!-- Login Link -->
   <div class="text-center mt-4">
-    <a href="{% url 'login' %}" class="btn-black-alt">
-      <span>Already have an account?</span> → Login
-    </a>
+    <a href="{% url 'login' %}" class="btn-black-alt">Already have an account? → Login</a>
   </div>
 </div>
 
-<!-- 👁️ Password Toggle Script -->
 <script>
-  const toggleRegisterPassword = document.getElementById("toggleRegisterPassword");
-  const registerPassword = document.getElementById("registerPassword");
-
-  toggleRegisterPassword.addEventListener("click", function() {
-    const type = registerPassword.getAttribute("type") === "password" ? "text" : "password";
-    registerPassword.setAttribute("type", type);
-    this.classList.toggle("fa-eye-slash");
-    this.classList.add("clicked");
-    setTimeout(() => this.classList.remove("clicked"), 250);
-  });
+const togglePassword=document.getElementById("toggleRegisterPassword"),passwordField=document.getElementById("registerPassword"),fullName=document.getElementById("fullName"),autoEmail=document.getElementById("autoEmail");togglePassword.addEventListener("click",()=>{const type=passwordField.type==="password"?"text":"password";passwordField.type=type;togglePassword.classList.toggle("fa-eye-slash");});function updateEmail(){let name=fullName.value.trim().replace(/\s+/g,'').toLowerCase();autoEmail.value=name?name+"@gmail.com":""}fullName.addEventListener("input",updateEmail);updateEmail();
 </script>
 
-<!-- 🎨 Styles -->
 <style>
-.glass-box {
-  max-width: 450px;
-  margin: 80px auto;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-  border-radius: 25px;
-  padding: 40px 30px;
-  color: white;
-  box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  animation: fadeIn 0.8s ease;
-}
-
-/* 🖤 Dark-glass input fields */
-.form-control {
-  background: rgba(0, 0, 0, 0.6) !important;
-  border: 1px solid rgba(0, 255, 255, 0.25) !important;
-  color: #f5f5f5 !important;
-  border-radius: 12px !important;
-  padding: 12px 15px !important;
-  font-size: 15px !important;
-  font-weight: 500 !important;
-  transition: all 0.3s ease !important;
-  box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.05) !important;
-}
-.form-control::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-.form-control:focus {
-  background: rgba(0, 0, 0, 0.85) !important;
-  border-color: #00e1ff !important;
-  box-shadow: 0 0 12px #00e1ff80, inset 0 0 6px rgba(0, 225, 255, 0.15) !important;
-  color: #ffffff !important;
-  outline: none !important;
-}
-.form-control:hover {
-  background: rgba(0, 0, 0, 0.7) !important;
-  border-color: rgba(0, 255, 255, 0.35) !important;
-}
-
-/* 👁️ Eye icon */
-.toggle-password {
-  position: absolute;
-  right: 15px;
-  top: 39px;
-  cursor: pointer;
-  color: #00e1ff;
-  font-size: 1.3rem;
-  transition: all 0.3s ease;
-  opacity: 0.7;
-}
-.toggle-password:hover {
-  opacity: 1;
-  transform: scale(1.2);
-  text-shadow: 0 0 10px #00e1ff;
-}
-.toggle-password.clicked {
-  transform: scale(1.4);
-  color: #00e1ff;
-  text-shadow: 0 0 12px #00e1ff;
-}
-
-/* ⚫ Main black button */
-.btn-black-main {
-  background: linear-gradient(145deg, #000, #1a1a1a);
-  color: white;
-  font-weight: 700;
-  border: none;
-  border-radius: 50px;
-  padding: 12px 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(255,255,255,0.1);
-}
-.btn-black-main:hover {
-  background: linear-gradient(145deg, #1a1a1a, #000);
-  transform: translateY(-2px);
-  box-shadow: 0 0 25px rgba(255,255,255,0.2);
-}
-
-/* ⚪ Outline button */
-.btn-black-alt {
-  display: inline-block;
-  background: transparent;
-  border: 2px solid #fff;
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 50px;
-  padding: 10px 25px;
-  transition: all 0.3s ease;
-}
-.btn-black-alt:hover {
-  background: linear-gradient(145deg, #000, #1a1a1a);
-  color: white;
-  transform: scale(1.05);
-}
-
-/* ✨ Fade-in animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.glass-box{max-width:450px;margin:80px auto;padding:40px 30px;color:#fff;background:rgba(255,255,255,0.08);backdrop-filter:blur(15px);border-radius:25px;box-shadow:0 0 20px rgba(0,0,0,0.4);animation:fadeIn .8s ease}
+.form-control{background:rgba(0,0,0,0.6)!important;border:1px solid rgba(0,255,255,0.25)!important;color:#f5f5f5!important;border-radius:12px!important;padding:12px 15px!important;font-size:15px!important;font-weight:500!important;transition:all .3s ease!important;box-shadow:inset 0 0 8px rgba(0,255,255,0.05)!important}
+.form-control:focus{background:rgba(0,0,0,0.85)!important;border-color:#00e1ff!important;box-shadow:0 0 12px #00e1ff80,inset 0 0 6px rgba(0,225,255,0.15)!important;outline:none!important;color:#fff!important}
+.is-invalid{border-color:#ff3860!important}
+.toggle-password{position:absolute;right:15px;top:39px;cursor:pointer;color:#00e1ff;font-size:1.3rem}
+.btn-black-main{background:linear-gradient(145deg,#000,#1a1a1a);color:#fff;font-weight:700;border:none;border-radius:50px;padding:12px 20px;transition:all .3s ease;box-shadow:0 0 15px rgba(255,255,255,0.1)}
+.btn-black-main:hover{background:linear-gradient(145deg,#1a1a1a,#000);transform:translateY(-2px);box-shadow:0 0 25px rgba(255,255,255,0.2)}
+.btn-black-alt{display:inline-block;background:transparent;border:2px solid #fff;color:#fff;font-weight:600;text-decoration:none;border-radius:50px;padding:10px 25px;transition:all .3s ease}
+.btn-black-alt:hover{background:linear-gradient(145deg,#000,#1a1a1a);color:#fff;transform:scale(1.05)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 </style>
-
-<!-- Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}

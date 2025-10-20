@@ -79,55 +79,79 @@ def delete_user(request, doc_id):
 def register(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        email = request.POST.get("email")
         password = request.POST.get("password")
-        role = request.POST.get("role")  # 👈 get role from form
+        role = request.POST.get("role")
 
-        # 🔍 Validation
-        if not name or not email or not password:
-            messages.error(request, "All fields are required.")
-            return redirect("reg")
+        # 🔹 Generate email from name
+        clean_name = name.strip().replace(" ", "").lower()
+        email = f"{clean_name}@gmail.com"
 
-        if len(password) < 8:
+        email_error = False
+        password_error = False
+
+        # Validation
+        if not name:
+            messages.error(request, "Name is required.")
+        if not password:
+            messages.error(request, "Password is required.")
+            password_error = True
+        if password and len(password) < 8:
             messages.error(request, "Password must be at least 8 characters long.")
-            return redirect("reg")
+            password_error = True
 
-        # ✅ Firebase signup URL
+        # If any validation errors, render form with retained data
+        if messages.get_messages(request):
+            return render(request, "myapp/registration.html", {
+                "name": name,
+                "role": role,
+                "email_error": email_error,
+                "password_error": password_error
+            })
+
+        # Firebase signup
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={settings.FIRE}"
         payload = {"email": email, "password": password, "returnSecureToken": True}
-
         response = requests.post(url, json=payload)
 
-        # ✅ If Firebase signup successful
         if response.status_code == 200:
             db.collection("User").add({
                 "Name": name,
                 "Email": email,
                 "Pswd": password,
-                "Role": role if role else "User",  # ✅ save actual selected role
+                "Role": role if role else "User",
             })
-            messages.success(request, "🎉 User Registered Successfully! Please Login.")
+            messages.success(request, f"🎉 {email} registered successfully! Please login.")
             return redirect("login")
-
-        # ❌ If Firebase signup fails
         else:
+            # Email already exists or other Firebase error
             error_message = response.json().get("error", {}).get("message", "Registration failed.")
             messages.error(request, f"Error: {error_message}")
-            return redirect("reg")
+            email_error = True
+            return render(request, "myapp/registration.html", {
+                "name": name,
+                "role": role,
+                "email_error": email_error
+            })
 
-    # 🔹 GET request (form display)
+    # GET request
     return render(request, "myapp/registration.html")
+
+
+
 
 
 
 # -------------------- FIREBASE LOGIN --------------------
 
 def login_view(request):
+    email = ''
+    email_error = False
+    password_error = False
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        # ✅ Firebase SignIn API (email/password login)
         url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={settings.FIRE}"
         payload = {"email": email, "password": password, "returnSecureToken": True}
         response = requests.post(url, json=payload)
@@ -136,15 +160,23 @@ def login_view(request):
             user = auth.get_user_by_email(email)
             request.session['user_email'] = user.email
             request.session['user_name'] = user.display_name or email.split('@')[0].capitalize()
-
             messages.success(request, "🎉 Login successful! Welcome back.")
             return redirect('welcome')
         else:
             error_message = response.json().get("error", {}).get("message", "Login failed.")
             messages.error(request, f"Login failed: {error_message}")
 
-    return render(request, "myapp/login.html")
+            # 🔹 Highlight fields
+            if "EMAIL" in error_message:
+                email_error = True
+            if "PASSWORD" in error_message or "INVALID" in error_message:
+                password_error = True
 
+    return render(request, "myapp/login.html", {
+        "email": email,
+        "email_error": email_error,
+        "password_error": password_error
+    })
 
 # -------------------- HOME (Default Route) --------------------
 
@@ -252,5 +284,7 @@ def add_user(request):
         return redirect('show_data')
 
     return render(request, 'add_user.html')
+
+
 
 
